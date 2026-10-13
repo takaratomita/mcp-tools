@@ -55,9 +55,24 @@
 
 | ツール名 | データ源 | 裏付け |
 |---|---|---|
-| `search_support_orgs` | 法務省 登録支援機関登録簿（PDL1.0・商用可） | 集客ハック t5 で法的に確認済み |
+| `search_support_orgs` | 出入国在留管理庁「登録支援機関登録簿」Excel（PDL1.0・商用可）を `scripts/build_support_orgs.py` でJSON化して同梱 | 集客ハック t5 で法的に確認済み。2026-10-13 に同庁サイトの利用規約（https://www.moj.go.jp/isa/copyright/index2.html）でPDL1.0適用を再確認 |
 | `lookup_corporate_number` | 国税庁 法人番号公表サイト API | 無料API・要appId |
-| `search_local_govt_bids` | 自治体入札・公募情報（対象範囲要絞り） | t12 で需要確認 |
+| `search_local_govt_bids` | 官公需情報ポータルサイト検索API（中小企業庁。https://www.kkj.go.jp/api/ 。認証不要・無料）。自治体に加え国の機関・独法の公告も含む | t12 で需要確認。利用規約でAPI利用の明記とポータルへのリンクが必須（出力末尾の出典で対応） |
+
+#### 入出力（v1 確定）
+
+| ツール | 入力 | 出力 |
+|---|---|---|
+| `lookup_corporate_number` | `number`（13桁）または `name`（部分一致） | 法人番号・名称・所在地・閉鎖有無。最大20件 |
+| `search_support_orgs` | `name`・`location`（本社または支援事務所の住所に部分一致）・`language` のいずれか1つ以上。`includeSuspended`（既定false）・`limit`（既定10・最大20） | 登録番号・登録日・名称・住所・電話・支援事務所・対応言語・任意的支援の有無・備考、総件数、基準日つき出典。代表者氏名は出さない |
+| `search_local_govt_bids` | `query`（空白区切りAND）・`prefecture`・`organization` のいずれか1つ以上。`since`（YYYY-MM-DD・既定30日前）・`limit`（既定10・最大20） | 件名・機関名・都道府県・市区町村・カテゴリー・公示種別・公告日・入札開始日・開札日・納入期限日・公告URL（http(s)のみ）、総件数、出典 |
+
+- 官公需APIの `Category`・`Procedure_Type` 絞り込みは公式ガイドで「データ未整備」とされているため入力に出さない（出力には含める）
+- 官公需APIの日付項目は、実応答では欠けることが多い（2026-10-13、「清掃」Count=20の実測で `TenderSubmissionDeadline`・`OpeningTendersEvent`・`PeriodEndTime` はいずれも0件、`ProcedureType` は4件）。欠けた項目は空文字で返す
+- 登録支援機関は休止届のある機関（備考に「休止」）を既定で除外する
+- 代表者氏名の列は取り込まない。ただし名称・支援事務所名の欄は登録簿の記載のまま返す。個人事業主の氏名や、事務所名に添えた代表者名（1件）が含まれる
+- 検索キーは起動時に作る（11,660件で約49ms。node 実測）。同梱データは生成時に NFKC 済みのため実行時の NFKC は省く
+- 登録簿の配布元は既定UAを403で拒否し、Python urllib の接続も切る（2026-10-13 実測）。生成スクリプトは curl で取得する
 
 - 命名は英語・検索されやすい汎用語。日本語説明をtool descriptionに併記
 - 認証なし・読み取り専用・rate limit自前
@@ -72,7 +87,7 @@
 
 - [x] P0：リポジトリ初期設定（README・LICENSE・.gitignore）
 - [x] P1：MCPサーバースケルトン（HTTP transport・ツール1個で動く）
-- [x] P2：ツール実装（4-1のうち1〜2個で先に出す）※`lookup_corporate_number` のみ。`search_support_orgs` は未実装
+- [x] P2：ツール実装（4-1の3ツールすべて。2026-10-13 に `search_support_orgs`・`search_local_govt_bids` を追加）
 - [x] P3：公開デプロイ（HTTPS・独自ドメイン）※デプロイ設定（wrangler.toml）の整備まで。実デプロイはドメイン用意後にユーザーが実施
 - [x] P4：プライバシーポリシー・サポート連絡先ページ
 - [ ] P5：ChatGPT Apps提出（verified individual登録・CSP設定・審査）
@@ -111,3 +126,4 @@
 |---|---|
 | 2026-10-08 | リポジトリ作成・Orca連携・本ファイル作成 |
 | 2026-10-08 | P0〜P4：TypeScript+Cloudflare Workers+Streamable HTTP（ステートレス）で `lookup_corporate_number` を実装。vitest 23件合格、wrangler dev でローカル実測（モック上流）。レビュー指摘のうち /mcp GET 405・件数上限・異常応答検出・タイムアウト・入力正規化を修正。/privacy・wrangler.toml・READMEチェックリスト整備。未了：`search_support_orgs`、実API疎通（appId未発行）、実デプロイ |
+| 2026-10-13 | `search_support_orgs`（登録簿 2026-10-08現在・11,660件を同梱）と `search_local_govt_bids`（官公需API）を実装。vitest 23件→62件合格・typecheck 0。wrangler dev で官公需APIへの実疎通と登録簿検索を確認。プライバシーポリシーに送信先（官公需API）を追記。未了：法人番号API実疎通（appId未発行）、実デプロイ、提出 |
