@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.takaratomita/mcp-tools",
+  "title": "Japan Public Data (法人番号・登録支援機関・官公需入札)",
+  "description": "Japanese public data search: corporate numbers (NTA), registered support organizations (ISA), and government procurement notices (kkj.go.jp). 日本の公開データ検索。",
+  "websiteUrl": "https://github.com/takaratomita/mcp-tools",
+  "repository": {
+    "url": "https://github.com/takaratomita/mcp-tools",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp-tools.takara0408103123.workers.dev/mcp"
+    }
+  ]
+}

@@ -2,7 +2,8 @@ name = "mcp-tools"
 main = "src/index.ts"
 compatibility_date = "2026-10-01"
 
-# 独自ドメインを用意したら有効化する（ユーザー作業）
+# 既定は workers.dev で公開（https://mcp-tools.takara0408103123.workers.dev）。
+# 独自ドメインを使う場合のみ有効化する
 # routes = [{ pattern = "mcp.example.com", custom_domain = true }]
 
 # 秘密情報は wrangler secret put HOUJIN_APP_ID で登録する（ここには書かない）

@@ -80,23 +80,24 @@
 ### 4-2. 技術スタック
 
 - MCP SDK（TypeScript or Python）+ Streamable HTTP transport
-- ホスティング：Cloudflare Workers / Vercel / 自前VPS（要HTTPS・常時稼働）
-- 独自ドメイン or サブドメイン（掲載審査でドメインが必要）
+- ホスティング：Cloudflare Workers（無料枠）。要HTTPS・常時稼働
+- 公開URL：workers.dev のサブドメインで足りる。2026-10-19 に一次情報で確認：公式 Registry は `io.github.<user>/` 名前空間でドメイン検証が不要、Smithery は独自ドメイン不要と明記、Claude Directory の提出は URL のみ（「MCPサーバーのドメインがサービスと一致」の条件はあるが workers.dev を禁じる記述なし）、ChatGPT Apps は「安定した公開HTTPS」とドメイン検証チャレンジを要求（workers.dev の禁止記述なし）。独自ドメインが要ると分かった時点で購入を判断する
 
 ## 5. 実装計画（フェーズ）
 
 - [x] P0：リポジトリ初期設定（README・LICENSE・.gitignore）
 - [x] P1：MCPサーバースケルトン（HTTP transport・ツール1個で動く）
 - [x] P2：ツール実装（4-1の3ツールすべて。2026-10-13 に `search_support_orgs`・`search_local_govt_bids` を追加）
-- [x] P3：公開デプロイ（HTTPS・独自ドメイン）※デプロイ設定（wrangler.toml）の整備まで。実デプロイはドメイン用意後にユーザーが実施
+- [x] P3：公開デプロイ（HTTPS）。2026-10-19 に `https://mcp-tools.takara0408103123.workers.dev` へ実デプロイ。独自ドメインは不要と判断（各ディレクトリの要件にドメイン所有の条件がない。下記 P3b）
 - [x] P4：プライバシーポリシー・サポート連絡先ページ
-- [ ] P5：ChatGPT Apps提出（verified individual登録・CSP設定・審査）
-- [ ] P6：Claude Directory提出（Pro加入が前提・$20/月）
+- [ ] P3b：MCPディレクトリへの一括登録（公式 Registry・Smithery・Glama・mcp.so・awesome 系・Cline）。素材は `server.json`・`docs/listings.md`。第1段（ローカル素材）は完了。push 後の第2段が未了
+- [ ] P5：ChatGPT Apps提出（platform.openai.com/plugins へのログインと本人確認が先。テストケースは正5・負3が必要）
+- [ ] P6：Claude Directory提出（Max プランで提出可を確認済み。`HOUJIN_APP_ID` 登録後に提出画面から送る）
 - [ ] P7：掲載後30日の流入実測→継続/停止判定
 
 ## 6. 営業・価格・収支
 
-- コスト：Claude Pro $20/月（提出に必須）＋ホスティング（無料枠可）＋ドメイン（既存あれば0円）
+- コスト：有料 Claude プラン（提出に必須。Pro $20/月〜。現契約は Max で追加費用なし）＋ホスティング（workers.dev 無料枠）＋ドメイン（不要）
 - 収益：直接課金なし。流入→後段サービスへの導線設計のみ
 
 ## 7. 検討した選択肢と却下理由
@@ -127,3 +128,4 @@
 | 2026-10-08 | リポジトリ作成・Orca連携・本ファイル作成 |
 | 2026-10-08 | P0〜P4：TypeScript+Cloudflare Workers+Streamable HTTP（ステートレス）で `lookup_corporate_number` を実装。vitest 23件合格、wrangler dev でローカル実測（モック上流）。レビュー指摘のうち /mcp GET 405・件数上限・異常応答検出・タイムアウト・入力正規化を修正。/privacy・wrangler.toml・READMEチェックリスト整備。未了：`search_support_orgs`、実API疎通（appId未発行）、実デプロイ |
 | 2026-10-13 | `search_support_orgs`（登録簿 2026-10-08現在・11,660件を同梱）と `search_local_govt_bids`（官公需API）を実装。vitest 23件→62件合格・typecheck 0。wrangler dev で官公需APIへの実疎通と登録簿検索を確認。プライバシーポリシーに送信先（官公需API）を追記。未了：法人番号API実疎通（appId未発行）、実デプロイ、提出 |
+| 2026-10-19 | workers.dev へ実デプロイ（`/health`・`/privacy` 200、`tools/list` と `search_support_orgs` を公開URLで実測）。`server.json`・アイコン・`docs/listings.md` を追加。Claude 提出画面で Max プランの提出可を確認。ChatGPT はログインが必要で未着手。未了：`HOUJIN_APP_ID`、各掲載先への登録（push 後）、提出 |
