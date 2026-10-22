@@ -90,9 +90,9 @@
 - [x] P2：ツール実装（4-1の3ツールすべて。2026-10-13 に `search_support_orgs`・`search_local_govt_bids` を追加）
 - [x] P3：公開デプロイ（HTTPS）。2026-10-19 に `https://mcp-tools.takara0408103123.workers.dev` へ実デプロイ。独自ドメインは不要と判断（各ディレクトリの要件にドメイン所有の条件がない。下記 P3b）
 - [x] P4：プライバシーポリシー・サポート連絡先ページ
-- [ ] P3b：MCPディレクトリへの一括登録（公式 Registry・Smithery・Glama・mcp.so・awesome 系・Cline）。素材は `server.json`・`docs/listings.md`。第1段（ローカル素材）は完了。第2段の状況（2026-10-21）：公式 Registry は `mcp-publisher validate` 通過、`mcp-publisher login github`（人の承認）待ち。Smithery は公開フローが 403「Updating servers has been removed」で止まり、サーバーは作られていない（サポート連絡が要る）。mcp.so は送信が有料（$39）のみで、無料の経路が見当たらず保留。Glama はサインインが要り、人の操作待ち。awesome 系・Cline は未着手
+- [ ] P3b：MCPディレクトリへの一括登録（公式 Registry・Smithery・Glama・mcp.so・awesome 系・Cline）。素材は `server.json`・`docs/listings.md`。第1段（ローカル素材）は完了。第2段の状況（2026-10-22）：公式 Registry は公開済み（`io.github.takaratomita/mcp-tools` 0.1.0。検索 `?search=takaratomita` が1件）。Glama は「Runs from source」で審査送信済み（承認待ち。承認後にスコアバッジを awesome-mcp-servers の PR に使う）。Cline は Issue #3170 を人が作成済み。Smithery は公開フローが 403「Updating servers has been removed」で止まり、サーバーは作られていない（サポート連絡が要る）。mcp.so は送信が有料（$39）のみで、無料の経路が見当たらず保留。awesome 系の PR は未着手（Glama 承認後に準備し、ボタンは人が押す）
 - [ ] P5：ChatGPT Apps提出（platform.openai.com/plugins へのログインと本人確認が先。テストケースは正5・負3が必要）
-- [ ] P6：Claude Directory提出（Max プランで提出可を確認済み。`HOUJIN_APP_ID` は 2026-10-21 に登録済み。提出画面は全10ステップのうち8まで入力済みで、ステップ9「Compliance」の同意7項目と最後の送信がユーザー待ち）
+- [x] P6：Claude Directory提出（2026-10-22 に人が同意して送信済み。審査中で、結果は登録メールに届く。`HOUJIN_APP_ID` は 2026-10-21 に登録済み）
 - [ ] P7：掲載後30日の流入実測→継続/停止判定
 
 ## 6. 営業・価格・収支
@@ -130,3 +130,4 @@
 | 2026-10-13 | `search_support_orgs`（登録簿 2026-10-08現在・11,660件を同梱）と `search_local_govt_bids`（官公需API）を実装。vitest 23件→62件合格・typecheck 0。wrangler dev で官公需APIへの実疎通と登録簿検索を確認。プライバシーポリシーに送信先（官公需API）を追記。未了：法人番号API実疎通（appId未発行）、実デプロイ、提出 |
 | 2026-10-19 | workers.dev へ実デプロイ（`/health`・`/privacy` 200、`tools/list` と `search_support_orgs` を公開URLで実測）。`server.json`・アイコン・`docs/listings.md` を追加。Claude 提出画面で Max プランの提出可を確認。ChatGPT はログインが必要で未着手。未了：`HOUJIN_APP_ID`、各掲載先への登録（push 後）、提出 |
 | 2026-10-21 | `HOUJIN_APP_ID` を登録し（new-company-collector の keyring の値を、人の手で Worker に渡した）、公開URLで3ツールすべての実動作を確認（`lookup_corporate_number` は法人番号7000012050002で国税庁・千代田区を返した）。Claude Directory の MCP コネクタ提出を、ステップ8まで入力した（接続は認証なし・ツール3個を検出。データの取り扱いは「サードパーティの API」を選び、補足事項で国税庁・官公需ポータル・登録簿の出所を説明した。ツール注釈に `title` が無い提案が出ている）。Smithery は 403 で公開不可、mcp.so は有料のみ、Glama はサインイン待ち、公式 Registry は GitHub ログイン待ち |
+| 2026-10-22 | 公式 Registry に `io.github.takaratomita/mcp-tools` 0.1.0 を公開（検索1件）。Glama に審査送信。Cline に Issue #3170。Claude Directory は人が同意・送信し審査中 |
