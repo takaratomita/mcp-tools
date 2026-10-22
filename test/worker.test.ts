@@ -85,6 +85,12 @@ describe("worker", () => {
     ]);
     for (const t of j.result.tools) expect(t.annotations?.readOnlyHint).toBe(true);
   });
+  it("tools/list は3ツールとも annotations.title を持つ", async () => {
+    const r = await worker.fetch(post({ jsonrpc: "2.0", id: 5, method: "tools/list" }), {});
+    const j = (await r.json()) as { result: { tools: { name: string; annotations?: { title?: string } }[] } };
+    expect(j.result.tools).toHaveLength(3);
+    for (const t of j.result.tools) expect(t.annotations?.title, t.name).toMatch(/\S/);
+  });
   it("search_support_orgs は同梱の登録簿から検索し出典を付ける", async () => {
     const r = await worker.fetch(
       post({

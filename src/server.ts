@@ -36,7 +36,7 @@ export function createServer(env: Env): McpServer {
           .optional()
           .describe("Company name, partial match, closed companies excluded / 法人名（部分一致・閉鎖法人は対象外）。number とは同時指定不可"),
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+      annotations: { title: "Lookup Japanese corporate number", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     },
     async (args) => {
       const r = await lookupCorporateNumber(args, {
@@ -80,7 +80,7 @@ export function createServer(env: Env): McpServer {
         includeSuspended: z.boolean().optional().describe("Include organizations that reported suspension / 支援業務休止の届出がある機関も含める"),
         limit: z.number().int().min(1).max(MAX_RESULTS).optional().describe(`Max results (default 10, max ${MAX_RESULTS}) / 最大件数`),
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      annotations: { title: "Search Japanese registered support organizations (SSW)", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
     },
     async (args) => {
       const r = searchSupportOrgs(args, supportOrgs);
@@ -119,7 +119,7 @@ export function createServer(env: Env): McpServer {
           .describe("Notices issued on or after this date, YYYY-MM-DD (default: 30 days ago) / 公告日がこの日以降（既定：30日前）"),
         limit: z.number().int().min(1).max(MAX_RESULTS).optional().describe(`Max results (default 10, max ${MAX_RESULTS}) / 最大件数`),
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+      annotations: { title: "Search Japanese public procurement notices", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     },
     async (args) => {
       const r = await searchBids(args, { baseUrl: env.KKJ_API_BASE });
